@@ -1,0 +1,1348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurseries Management Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #365314 0%, #3f6212 30%, #4d7c0f 60%, #65a30d 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(54, 83, 20, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #bef264;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "🌿";
+            font-size: 1.8rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        .data-table {
+    background: rgba(54, 83, 20, 0.6);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+.table-header {
+    display: grid
+;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    font-size: 0.75rem;
+    color: #bef264;
+    font-weight: 600;
+}
+.table-row {
+    display: grid
+;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    font-size: 0.875rem;
+}
+        select {
+            background: rgba(63, 98, 18, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            color: #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            min-width: 150px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #bef264;
+            box-shadow: 0 0 0 3px rgba(190, 242, 100, 0.1);
+        }
+
+        .dashboard {
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: rgba(63, 98, 18, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #bef264, #84cc16);
+        }
+
+        .kpi-title {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #bef264;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-subtitle {
+            font-size: 0.75rem;
+            color: #64748b;
+            display: none;
+        }
+
+        .kpi-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .trend-positive {
+            color: #10b981;
+        }
+
+        .trend-negative {
+            color: #f59e0b;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: rgba(63, 98, 18, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+        }
+
+        .kenya-map {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .map-container {
+            position: relative;
+            height: 400px;
+            background: rgba(54, 83, 20, 0.6);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .region {
+            position: absolute;
+            background: rgba(190, 242, 100, 0.3);
+            border: 2px solid #bef264;
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .region:hover {
+            background: rgba(190, 242, 100, 0.6);
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(190, 242, 100, 0.3);
+        }
+
+        .region-label {
+            font-size: 0.7rem;
+            color: #bef264;
+            margin-bottom: 0.25rem;
+        }
+
+        .region-count {
+            font-size: 0.9rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .region-species {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        /* Positioning for Kenya regions */
+        .nairobi { top: 55%; left: 45%; }
+        .central { top: 45%; left: 42%; }
+        .coast { top: 70%; left: 65%; }
+        .eastern { top: 50%; left: 55%; }
+        .western { top: 45%; left: 25%; }
+        .nyanza { top: 55%; left: 25%; }
+        .rift-valley { top: 40%; left: 35%; }
+        .north-eastern { top: 25%; left: 65%; }
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .large-chart {
+            grid-column: 1 / -1;
+        }
+
+        .large-chart .chart-container {
+            height: 400px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: #a5b4fc;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-excellent { background-color: #10b981; }
+        .status-good { background-color: #6366f1; }
+        .status-fair { background-color: #8b5cf6; }
+        .status-warning { background-color: #f59e0b; }
+        .status-poor { background-color: #ef4444; }
+
+        .nursery-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .nursery-card {
+            background: rgba(30, 58, 138, 0.6);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .nursery-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .nursery-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #a5b4fc;
+        }
+
+        .nursery-unit {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+        .stats-grid {
+    display: grid
+;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+        .stat-card {
+    background: rgba(54, 83, 20, 0.6);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #bef264;
+    margin-bottom: 0.25rem;
+}
+.stat-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+        .refresh-btn {
+            background: linear-gradient(135deg, #a5b4fc, #6366f1);
+            color: #1e3a8a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(165, 180, 252, 0.3);
+        }
+
+        .species-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .species-card {
+            background: rgba(165, 180, 252, 0.2);
+            border: 1px solid rgba(165, 180, 252, 0.3);
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .species-scientific {
+            font-size: 0.75rem;
+            color: #a5b4fc;
+            font-style: italic;
+        }
+
+        .species-local {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        .operational-stats {
+            background: rgba(30, 58, 138, 0.8);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .operational-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .operational-item:last-child {
+            border-bottom: none;
+        }
+
+        .production-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: rgba(30, 58, 138, 0.6);
+            border-radius: 8px;
+        }
+
+        .flow-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #a5b4fc, #6366f1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .flow-content {
+            flex: 1;
+        }
+
+        .flow-title {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+.regional-chart{
+    width: 80%;
+}
+        .flow-value {
+            font-size: 1.1rem;
+            color: #a5b4fc;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .age-distribution {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .age-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .age-label {
+            min-width: 80px;
+            font-size: 0.875rem;
+            color: #cbd5e1;
+        }
+
+        .age-progress {
+            flex: 1;
+            height: 20px;
+            background: rgba(30, 58, 138, 0.6);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .age-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #a5b4fc, #6366f1);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .age-count {
+            min-width: 80px;
+            text-align: right;
+            font-size: 0.875rem;
+            color: #a5b4fc;
+            font-weight: 600;
+        }
+
+        .nursery-img{width: 65%;}
+
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 1rem;
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .nursery-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">Nurseries Management</div>
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label">Project</label>
+                    <select id="projectFilter">
+                        <option value="all">All Projects</option>
+                        <option value="forest-restoration">Forest Restoration</option>
+                        <option value="community-nurseries">Community Nurseries</option>
+                        <option value="commercial-forestry">Commercial Forestry</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Country</label>
+                    <select id="countryFilter">
+                        <option value="all">All Countries</option>
+                        <option value="kenya">Kenya</option>
+                        <option value="uganda">Uganda</option>
+                        <option value="tanzania">Tanzania</option>
+                        <option value="ethiopia">Ethiopia</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Ownership</label>
+                    <select id="ownershipFilter">
+                        <option value="all">All Types</option>
+                        <option value="community">Community</option>
+                        <option value="private">Private</option>
+                        <option value="government">Government</option>
+                        <option value="cooperative">Cooperative</option>
+                    </select>
+                </div>
+                <button class="refresh-btn" onclick="updateDashboard()">Refresh</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Total Nurseries</div>
+                <div class="kpi-value">1,834</div>
+                <div class="kpi-subtitle">Registered and operational</div>
+                <div class="kpi-trend trend-positive">
+                    ↗ +287 new registrations
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-title">Total Species</div>
+                <div class="kpi-value">156</div>
+                <div class="kpi-subtitle">Different species cultivated</div>
+                <div class="kpi-trend trend-positive">
+                    ↗ +23 new species added
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-title">Seeds Purchased</div>
+                <div class="kpi-value">847K</div>
+                <div class="kpi-subtitle">Total seeds procured</div>
+                <div class="kpi-trend trend-positive">
+                    ↗ +34% increase in procurement
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-title">Germination Success</div>
+                <div class="kpi-value">87.4%</div>
+                <div class="kpi-subtitle">Average germination rate</div>
+                <div class="kpi-trend trend-negative">
+                    ↘ -2.3% seasonal variation
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="chart-grid">
+            <!-- Nursery Establishment Trends -->
+            <!-- <div class="chart-card large-chart">
+                <div class="chart-title">📊 Nursery Establishment & Production Trends</div>
+                <div class="chart-container">
+                    <canvas id="establishmentTrendChart"></canvas>
+                </div>
+            </div> -->
+            <div class="chart-card" style="grid-column: 1 / -1;">
+                <div class="chart-title">Detailed Regional Analysis</div>
+                <div class="data-table">
+                    <div class="table-header">
+                        <div>Region</div>
+                        <div>Nurseries</div>
+                        <div>Species</div>
+                        <div>Performance</div>
+                    </div>
+                    <div class="table-row">
+                        <div><span class="performance-indicator high"></span>Rift Valley</div>
+                        <div>298</div>
+                        <div>35</div>
+                        <div>Excellent</div>
+                    </div>
+                    <div class="table-row">
+                        <div><span class="performance-indicator high"></span>Central</div>
+                        <div>234</div>
+                        <div>31</div>
+                        <div>Very Good</div>
+                    </div>
+                    <div class="table-row">
+                        <div><span class="performance-indicator medium"></span>Coast</div>
+                        <div>189</div>
+                        <div>28</div>
+                        <div>Good</div>
+                    </div>
+                    <div class="table-row">
+                        <div><span class="performance-indicator medium"></span>Eastern</div>
+                        <div>167</div>
+                        <div>25</div>
+                        <div>Good</div>
+                    </div>
+                    <div class="table-row">
+                        <div><span class="performance-indicator medium"></span>Western</div>
+                        <div>156</div>
+                        <div>27</div>
+                        <div>Good</div>
+                    </div>
+                    <div class="table-row">
+                        <div><span class="performance-indicator medium"></span>Nairobi</div>
+                        <div>145</div>
+                        <div>23</div>
+                        <div>Fair</div>
+                    </div>
+                    <div class="table-row">
+                        <div><span class="performance-indicator low"></span>Nyanza</div>
+                        <div>123</div>
+                        <div>22</div>
+                        <div>Fair</div>
+                    </div>
+                    <div class="table-row">
+                        <div><span class="performance-indicator low"></span>North Eastern</div>
+                        <div>35</div>
+                        <div>12</div>
+                        <div>Needs Attention</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-card" style="text-align:center;">
+                <div class="chart-title">Regional Distribution Chart</div>
+                <div class="chart-container">
+                    <canvas id="geoChart"></canvas>
+                     <!-- <img src="/Users/salmanyagaka/Documents/interviews/nursery.png" class="nursery-img"/> -->
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Regions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">1,347</div>
+                        <div class="stat-label">Total Nurseries</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">203</div>
+                        <div class="stat-label">Species Diversity</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">168</div>
+                        <div class="stat-label">Avg per Region</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Production Metrics -->
+            <div class="chart-card">
+                <div class="chart-title">📈 Production Flow Metrics</div>
+                <div class="chart-container">
+                    <div class="production-flow">
+                        <div class="flow-step">
+                            <div class="flow-icon">🌰</div>
+                            <div class="flow-content">
+                                <div class="flow-title">Seeds Sown</div>
+                                <div class="flow-value">2.3M seeds</div>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-icon">🌱</div>
+                            <div class="flow-content">
+                                <div class="flow-title">Seeds Germinated</div>
+                                <div class="flow-value">2.01M seedlings</div>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-icon">🌿</div>
+                            <div class="flow-content">
+                                <div class="flow-title">Seedlings Survived</div>
+                                <div class="flow-value">1.89M healthy</div>
+                            </div>
+                        </div>
+                        <!-- <div class="flow-step">
+                            <div class="flow-icon">🌳</div>
+                            <div class="flow-content">
+                                <div class="flow-title">Ready for Planting</div>
+                                <div class="flow-value">1.64M mature</div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ownership Distribution -->
+            <div class="chart-card">
+                <div class="chart-title">🏢 Ownership Structure</div>
+                <div class="chart-container">
+                    <div class="metric-row">
+                        <span class="metric-label">
+                            <span class="status-indicator status-excellent"></span>
+                            Community Owned
+                        </span>
+                        <span class="metric-value">734 nurseries (40%)</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">
+                            <span class="status-indicator status-good"></span>
+                            Private Ownership
+                        </span>
+                        <span class="metric-value">623 nurseries (34%)</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">
+                            <span class="status-indicator status-fair"></span>
+                            Government Owned
+                        </span>
+                        <span class="metric-value">312 nurseries (17%)</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">
+                            <span class="status-indicator status-warning"></span>
+                            Cooperative
+                        </span>
+                        <span class="metric-value">165 nurseries (9%)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Water Sources -->
+            <!-- <div class="chart-card">
+                <div class="chart-title">💧 Water Source Distribution</div>
+                <div class="chart-container">
+                    <canvas id="waterSourceChart"></canvas>
+                </div>
+            </div> -->
+
+            <!-- Seed Sources -->
+            <!-- <div class="chart-card">
+                <div class="chart-title">🌰 Seed Procurement Sources</div>
+                <div class="chart-container">
+                    <canvas id="seedSourceChart"></canvas>
+                </div>
+            </div> -->
+
+            <!-- Production Methods -->
+            <!-- <div class="chart-card">
+                <div class="chart-title">🛠️ Production Methods Used</div>
+                <div class="chart-container">
+                    <canvas id="productionMethodChart"></canvas>
+                </div>
+            </div> -->
+
+            <!-- Seedling Age Distribution -->
+            <div class="chart-card">
+                <div class="chart-title">📅 Seedling Age Distribution</div>
+                <div class="chart-container">
+                    <div class="age-distribution">
+                        <div class="age-bar">
+                            <div class="age-label">0-3 months</div>
+                            <div class="age-progress">
+                                <div class="age-fill" style="width: 35%"></div>
+                            </div>
+                            <div class="age-count">643K</div>
+                        </div>
+                        <div class="age-bar">
+                            <div class="age-label">3-6 months</div>
+                            <div class="age-progress">
+                                <div class="age-fill" style="width: 28%"></div>
+                            </div>
+                            <div class="age-count">529K</div>
+                        </div>
+                        <div class="age-bar">
+                            <div class="age-label">6-12 months</div>
+                            <div class="age-progress">
+                                <div class="age-fill" style="width: 24%"></div>
+                            </div>
+                            <div class="age-count">453K</div>
+                        </div>
+                        <div class="age-bar">
+                            <div class="age-label">12+ months</div>
+                            <div class="age-progress">
+                                <div class="age-fill" style="width: 13%"></div>
+                            </div>
+                            <div class="age-count">264K</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Propagation Methods -->
+            <div class="chart-card">
+                <div class="chart-title">🔬 Propagation Techniques</div>
+                <div class="chart-container">
+                    <div class="operational-stats">
+                        <div class="operational-item">
+                            <span>Direct Seeding</span>
+                            <span style="color: #a5b4fc; font-weight: 600;">1,247 nurseries</span>
+                        </div>
+                        <div class="operational-item">
+                            <span>Grafting</span>
+                            <span style="color: #a5b4fc; font-weight: 600;">543 nurseries</span>
+                        </div>
+                        <div class="operational-item">
+                            <span>Cutting Propagation</span>
+                            <span style="color: #a5b4fc; font-weight: 600;">398 nurseries</span>
+                        </div>
+                        <div class="operational-item">
+                            <span>Tissue Culture</span>
+                            <span style="color: #a5b4fc; font-weight: 600;">89 nurseries</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Species Portfolio -->
+            <div class="chart-card">
+                <div class="chart-title">🌿 Species Portfolio Diversity</div>
+                <div class="chart-container">
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="color: #cbd5e1; font-size: 0.9rem; margin-bottom: 0.5rem;">Popular Species (Scientific/Local Names)</h4>
+                        <div class="species-grid">
+                            <div class="species-card">
+                                <div class="species-scientific">Eucalyptus grandis</div>
+                                <div class="species-local">Blue Gum</div>
+                            </div>
+                            <div class="species-card">
+                                <div class="species-scientific">Grevillea robusta</div>
+                                <div class="species-local">Silk Oak</div>
+                            </div>
+                            <div class="species-card">
+                                <div class="species-scientific">Casuarina cunninghamiana</div>
+                                <div class="species-local">River Oak</div>
+                            </div>
+                            <div class="species-card">
+                                <div class="species-scientific">Mangifera indica</div>
+                                <div class="species-local">Mango</div>
+                            </div>
+                            <div class="species-card">
+                                <div class="species-scientific">Persea americana</div>
+                                <div class="species-local">Avocado</div>
+                            </div>
+                            <div class="species-card">
+                                <div class="species-scientific">Moringa oleifera</div>
+                                <div class="species-local">Moringa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Operational Status -->
+            <!-- <div class="chart-card">
+                <div class="chart-title">⚡ Operational Performance</div>
+                <div class="chart-container">
+                    <div class="nursery-stats">
+                        <div class="nursery-card">
+                            <div class="nursery-label">Active Nurseries</div>
+                            <div class="nursery-value">1,623</div>
+                            <div class="nursery-unit">88.5% operational</div>
+                        </div>
+                        <div class="nursery-card">
+                            <div class="nursery-label">Photo Documented</div>
+                            <div class="nursery-value">1,567</div>
+                            <div class="nursery-unit">85.4% coverage</div>
+                        </div>
+                        <div class="nursery-card">
+                            <div class="nursery-label">Avg Purchase Volume</div>
+                            <div class="nursery-value">462</div>
+                            <div class="nursery-unit">seeds per nursery</div>
+                        </div>
+                        <div class="nursery-card">
+                            <div class="nursery-label">Success Rate</div>
+                            <div class="nursery-value">82.3%</div>
+                            <div class="nursery-unit">survival to maturity</div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <script>
+        // Chart.js configuration
+        Chart.defaults.color = '#e2e8f0';
+        Chart.defaults.borderColor = 'rgba(148, 163, 184, 0.1)';
+
+
+        const geoCtx = document.getElementById('geoChart').getContext('2d');
+        console.log(geoCtx, "hhshs")
+        new Chart(geoCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Rift Valley', 'Central', 'Coast', 'Eastern', 'Western', 'Nairobi', 'Nyanza', 'North Eastern'],
+                datasets: [{
+                    label: 'Number of Nurseries',
+                    data: [298, 234, 189, 167, 156, 145, 123, 35],
+                    backgroundColor: [
+                        'rgba(190, 242, 100, 0.9)',
+                        'rgba(190, 242, 100, 0.8)',
+                        'rgba(132, 204, 22, 0.8)',
+                        'rgba(132, 204, 22, 0.7)',
+                        'rgba(132, 204, 22, 0.6)',
+                        'rgba(101, 163, 13, 0.7)',
+                        'rgba(101, 163, 13, 0.6)',
+                        'rgba(77, 124, 15, 0.8)'
+                    ],
+                    borderColor: '#bef264',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function(context) {
+                                const speciesData = [35, 31, 28, 25, 27, 23, 22, 12];
+                                return `Species: ${speciesData[context.dataIndex]}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Nurseries'
+                        },
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Region'
+                        },
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+        // Establishment Trend Chart
+        const establishmentTrendCtx = document.getElementById('establishmentTrendChart').getContext('2d');
+        new Chart(establishmentTrendCtx, {
+            type: 'line',
+            data: {
+                labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [{
+                    label: 'New Nurseries',
+                    data: [156, 203, 287, 342, 398, 287],
+                    borderColor: '#bef264',
+                    backgroundColor: 'rgba(190, 242, 100, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    yAxisID: 'y'
+                }, {
+                    label: 'Cumulative Total',
+                    data: [456, 659, 946, 1288, 1686, 1834],
+                    borderColor: '#84cc16',
+                    backgroundColor: 'rgba(132, 204, 22, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    yAxisID: 'y1'
+                }, {
+                    label: 'Species Count',
+                    data: [89, 98, 112, 128, 143, 156],
+                    borderColor: '#65a30d',
+                    backgroundColor: 'rgba(101, 163, 13, 0.1)',
+                    tension: 0.4,
+                    yAxisID: 'y2'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'New Nurseries'
+                        },
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Total Nurseries'
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        }
+                    },
+                    y2: {
+                        type: 'linear',
+                        display: false,
+                        min: 80,
+                        max: 160
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+       
+
+        // Species Chart
+        const speciesCtx = document.getElementById('speciesChart').getContext('2d');
+        new Chart(speciesCtx, {
+            type: 'horizontalBar',
+            data: {
+                labels: ['Eucalyptus grandis', 'Grevillea robusta', 'Casuarina cunninghamiana', 'Mangifera indica', 'Persea americana'],
+                datasets: [{
+                    label: 'Number of Nurseries',
+                    data: [743, 634, 567, 498, 423],
+                    backgroundColor: [
+                        'rgba(190, 242, 100, 0.9)',
+                        'rgba(190, 242, 100, 0.7)',
+                        'rgba(190, 242, 100, 0.6)',
+                        'rgba(190, 242, 100, 0.5)',
+                        'rgba(190, 242, 100, 0.4)'
+                    ],
+                    borderColor: '#bef264',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    },
+                    x: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+   
+        const plantspeciesCtx = document.getElementById('plantspeciesChart').getContext('2d');
+        new Chart(plantspeciesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['xxx', 'xxx', 'xxx', 'xxx', 'xxxa'],
+                datasets: [{
+                    label: 'Survival Rate %',
+                    data: [89, 76, 85, 91, 82],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(16, 185, 129, 0.6)',
+                        'rgba(16, 185, 129, 0.9)',
+                        'rgba(16, 185, 129, 0.7)'
+                    ],
+                    borderColor: [
+                        '#10b981',
+                        '#ef4444',
+                        '#10b981',
+                        '#10b981',
+                        '#10b981'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 60,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+        // Water Source Chart
+        const waterSourceCtx = document.getElementById('waterSourceChart').getContext('2d');
+        new Chart(waterSourceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Borehole', 'River/Stream', 'Rainwater Harvesting', 'Municipal Water', 'Well', 'Other'],
+                datasets: [{
+                    data: [32, 24, 18, 15, 8, 3],
+                    backgroundColor: [
+                        '#bef264',
+                        '#84cc16',
+                        '#65a30d',
+                        '#4d7c0f',
+                        '#3f6212',
+                        '#365314'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+
+        // Seed Source Chart
+        const seedSourceCtx = document.getElementById('seedSourceChart').getContext('2d');
+        new Chart(seedSourceCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Local Collection', 'Purchased Seeds', 'Government Supply', 'NGO Distribution', 'Farmer Exchange'],
+                datasets: [{
+                    label: 'Nurseries Using Source',
+                    data: [543, 423, 289, 198, 167],
+                    backgroundColor: [
+                        'rgba(190, 242, 100, 0.9)',
+                        'rgba(190, 242, 100, 0.7)',
+                        'rgba(190, 242, 100, 0.6)',
+                        'rgba(190, 242, 100, 0.5)',
+                        'rgba(190, 242, 100, 0.4)'
+                    ],
+                    borderColor: '#bef264',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Production Method Chart
+        const productionMethodCtx = document.getElementById('productionMethodChart').getContext('2d');
+        new Chart(productionMethodCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Direct Sowing', 'Transplanting', 'Container Growing', 'Bare Root', 'Other'],
+                datasets: [{
+                    data: [35, 28, 22, 12, 3],
+                    backgroundColor: [
+                        '#bef264',
+                        '#84cc16',
+                        '#65a30d',
+                        '#4d7c0f',
+                        '#3f6212'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+
+        // Update dashboard function
+        function updateDashboard() {
+            const projectFilter = document.getElementById('projectFilter').value;
+            const countryFilter = document.getElementById('countryFilter').value;
+            const ownershipFilter = document.getElementById('ownershipFilter').value;
+            
+            console.log('Updating dashboard with filters:', { projectFilter, countryFilter, ownershipFilter });
+            
+            const refreshBtn = document.querySelector('.refresh-btn');
+            refreshBtn.innerHTML = 'Updating...';
+            refreshBtn.disabled = true;
+            
+            setTimeout(() => {
+                refreshBtn.innerHTML = 'Refresh';
+                refreshBtn.disabled = false;
+                updateKPIs(projectFilter, countryFilter, ownershipFilter);
+            }, 1500);
+        }
+
+        function updateKPIs(project, country, ownership) {
+            const kpiValues = document.querySelectorAll('.kpi-value');
+            const mockData = {
+                'forest-restoration': ['1,234', '134', '623K', '89.1%'],
+                'community-nurseries': ['423', '98', '234K', '85.7%'],
+                'commercial-forestry': ['177', '67', '189K', '91.2%']
+            };
+            
+            if (project !== 'all' && mockData[project]) {
+                kpiValues.forEach((element, index) => {
+                    element.textContent = mockData[project][index];
+                });
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Nurseries Management Dashboard loaded successfully');
+        });
+        </script>
+    </body>
+    </html>
