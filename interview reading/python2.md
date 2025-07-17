@@ -18,21 +18,6 @@
 - Examples: `list`, `dict`, `set`, custom objects
 - Modifications happen in-place
 
-```python
-# Immutable example
-x = "hello"
-y = x
-x = x + " world"  # Creates new string object
-print(x)  # "hello world"
-print(y)  # "hello" (unchanged)
-
-# Mutable example
-list1 = [1, 2, 3]
-list2 = list1
-list1.append(4)  # Modifies the same object
-print(list1)  # [1, 2, 3, 4]
-print(list2)  # [1, 2, 3, 4] (changed too!)
-```
 
 **Implications:**
 - Immutable objects are hashable and can be used as dictionary keys
@@ -105,52 +90,7 @@ print(p is q)  # False (not cached)
 - Built-in names like `print`, `len`, `str`
 - Lowest priority in lookup
 
-```python
-# Example demonstrating LEGB
-x = "global"  # Global scope
 
-def outer():
-    x = "enclosing"  # Enclosing scope
-    
-    def inner():
-        x = "local"  # Local scope
-        print(f"Inner x: {x}")  # local
-        print(f"Built-in: {len}")  # built-in
-    
-    inner()
-    print(f"Outer x: {x}")  # enclosing
-
-outer()
-print(f"Global x: {x}")  # global
-
-# Output:
-# Inner x: local
-# Outer x: enclosing
-# Global x: global
-```
-
-**Modifying Variables:**
-```python
-# Global keyword
-count = 0
-
-def increment():
-    global count
-    count += 1
-
-# Nonlocal keyword
-def outer():
-    x = 10
-    
-    def inner():
-        nonlocal x
-        x += 1
-    
-    inner()
-    return x
-
-print(outer())  # 11
-```
 
 ### Functions and Decorators
 
@@ -1324,99 +1264,82 @@ BaseException
     └── ... (many more)
 ```
 
-**Exception Handling Best Practices:**
+# Exception Handling Best Practices in Python
+- An exception is an event that occurs during program execution that disrupts the normal flow of instructions. It's Python's way of signaling that something unexpected or erroneous has happened.
 
-**1. Specific Exception Handling:**
-```python
-# Good: Catch specific exceptions
-try:
-    number = int(input("Enter a number: "))
-    result = 10 / number
-    my_list = [1, 2, 3]
-    print(my_list[number])
-except ValueError:
-    print("Invalid number format")
-except ZeroDivisionError:
-    print("Cannot divide by zero")
-except IndexError:
-    print("Index out of range")
-except Exception as e:
-    print(f"Unexpected error: {e}")
 
-# Bad: Catching all exceptions
-try:
-    # some code
-    pass
-except:  # Don't do this!
-    pass
-```
+- Exception handling is crucial for writing robust, maintainable Python code. Here are the key best practices:
 
-**2. Exception Information:**
-```python
-import sys
-import traceback
 
-try:
-    1 / 0
-except ZeroDivisionError as e:
-    print(f"Exception type: {type(e).__name__}")
-    print(f"Exception message: {e}")
-    print(f"Exception args: {e.args}")
-    
-    # Get traceback information
-    exc_type, exc_value, exc_traceback = sys.exc_info()
-    print("Traceback:")
-    traceback.print_exception(exc_type, exc_value, exc_traceback)
-```
+## 1. Be Specific with Exception Types
 
-**3. Finally and Else Clauses:**
-```python
-def read_file(filename):
-    file = None
-    try:
-        file = open(filename, 'r')
-        content = file.read()
-        return content
-    except FileNotFoundError:
-        print(f"File {filename} not found")
-        return None
-    except PermissionError:
-        print(f"No permission to read {filename}")
-        return None
-    else:
-        # Executed if no exception occurred
-        print("File read successfully")
-    finally:
-        # Always executed
-        if file:
-            file.close()
-            print("File closed")
-```
+**❌ Bad: Catching all exceptions**
+Don't use bare `except:` clauses as they catch all exceptions, making it difficult to identify and handle specific problems.
 
-**4. Custom Exceptions:**
-```python
-class ValidationError(Exception):
-    """Custom exception for validation errors"""
-    def __init__(self, message, field_name=None):
-        super().__init__(message)
-        self.field_name = field_name
+**✅ Good: Catch specific exceptions**
+Catch specific exception types and handle each appropriately. This allows for targeted error handling and better debugging.
 
-class User:
-    def __init__(self, name, age):
-        if not name:
-            raise ValidationError("Name cannot be empty", "name")
-        if age < 0:
-            raise ValidationError("Age cannot be negative", "age")
-        self.name = name
-        self.age = age
+## 2. Use Multiple Except Blocks
 
-# Usage
-try:
-    user = User("", 25)
-except ValidationError as e:
-    print(f"Validation error in {e.field_name}: {e}")
-```
+Handle different exceptions with appropriate responses. For example, when making HTTP requests, handle timeout errors differently from connection errors, and authentication errors differently from server errors.
 
+## 3. Use Finally for Cleanup
+
+Always use `finally` for cleanup operations that must run regardless of whether an exception occurred. This is essential for closing file handles, database connections, or other resources.
+
+## 4. Use Else Clause for Success Logic
+
+The `else` clause runs only if no exceptions occurred in the `try` block. This is useful for code that should only run on successful completion, keeping success logic separate from error handling.
+
+## 5. Avoid Silent Failures: Don't use bare except: pass blocks
+
+
+## 6. Use Context Managers for Resource Management
+
+**❌ Bad: Manual resource management**
+Manually managing resources like file handles or database connections is error-prone and can lead to resource leaks.
+
+**✅ Good: Use context managers**
+Use `with` statements and context managers to ensure resources are properly cleaned up, even if exceptions occur.
+
+## 7. Create Meaningful Custom Exceptions
+
+Create custom exception classes that provide meaningful information about what went wrong. Include relevant attributes like error codes, field names, or context that will help with debugging and handling.
+
+## 8. Use Exception Chaining
+
+Chain exceptions to preserve the original error context using `raise ... from ...`. This maintains the full error trail while adding your own context.
+
+## 9. Log Exceptions Properly
+
+Use proper logging to record exceptions with appropriate levels (warning, error, critical) and include stack traces when necessary. This helps with debugging and monitoring.
+
+## 10. Use Assertions for Debug Checks
+
+Use assertions for conditions that should never be false during development. Assertions help catch programming errors early but can be disabled in production.
+
+## 11. Exception Handling in Class Methods
+
+When designing classes, ensure proper exception handling in methods. Validate inputs, handle resource cleanup, and provide meaningful error messages that help users understand what went wrong.
+
+## 12. Testing Exception Handling
+
+Write tests that verify your exception handling works correctly. Test both that exceptions are raised when expected and that they're not raised when they shouldn't be.
+
+## Key Exception Handling Principles
+
+1. **Be Specific**: Catch specific exceptions rather than using bare `except:`
+2. **Handle Appropriately**: Only catch exceptions you can meaningfully handle
+3. **Clean Up**: Use `finally` or context managers for resource cleanup
+4. **Log Errors**: Provide meaningful error messages and logging
+5. **Fail Fast**: Don't hide errors that indicate serious problems
+6. **Use Custom Exceptions**: Create domain-specific exceptions for clarity
+7. **Chain Exceptions**: Preserve original error context when re-raising
+8. **Test Exception Paths**: Write tests for both success and failure scenarios
+9. **Document Exceptions**: Document what exceptions your functions can raise
+10. **Avoid Silent Failures**: Don't use bare `except: pass` blocks
+
+Following these practices will make your code more robust, maintainable, and easier to debug!
 **Q: How do you create and use custom exceptions effectively?**
 
 **A:** Custom exceptions should be meaningful, well-structured, and provide useful information:
@@ -1896,72 +1819,10 @@ def fastest_string_building(items):
 ```
 
 **4. List Comprehensions vs Loops:**
-```python
-# Traditional loop
-def traditional_loop(data):
-    result = []
-    for item in data:
-        if item % 2 == 0:
-            result.append(item ** 2)
-    return result
 
-# List comprehension (faster)
-def list_comprehension(data):
-    return [item ** 2 for item in data if item % 2 == 0]
-
-# Generator expression (memory efficient)
-def generator_expression(data):
-    return (item ** 2 for item in data if item % 2 == 0)
-```
-
-**5. Use Built-in Functions:**
-```python
-import operator
-from functools import reduce
-
-# Slow: Manual implementation
-def slow_sum(numbers):
-    total = 0
-    for num in numbers:
-        total += num
-    return total
-
-# Fast: Built-in function
-def fast_sum(numbers):
-    return sum(numbers)
-
-# Map operations
-numbers = [1, 2, 3, 4, 5]
-
-# Slow
-squared_slow = [x**2 for x in numbers]
-
-# Fast with map
-squared_fast = list(map(lambda x: x**2, numbers))
-
-# Even faster with operator
-squared_fastest = list(map(operator.mul, numbers, numbers))
-```
 
 **6. Avoid Global Variables:**
-```python
-# Slow: Global variable access
-global_var = 100
 
-def slow_function():
-    total = 0
-    for i in range(1000):
-        total += global_var  # Global lookup each time
-    return total
-
-# Fast: Local variable
-def fast_function():
-    local_var = 100  # Local lookup is faster
-    total = 0
-    for i in range(1000):
-        total += local_var
-    return total
-```
 
 **Q: Explain the GIL (Global Interpreter Lock) and its implications.**
 
@@ -1972,53 +1833,6 @@ def fast_function():
 - Prevents race conditions in reference counting
 - Simplifies memory management
 
-**GIL Implications:**
-```python
-import threading
-import time
-
-# CPU-bound task (affected by GIL)
-def cpu_bound_task(n):
-    count = 0
-    for i in range(n):
-        count += i * i
-    return count
-
-# I/O-bound task (less affected by GIL)
-def io_bound_task():
-    time.sleep(1)  # GIL is released during sleep
-    return "completed"
-
-# Threading with CPU-bound tasks (limited by GIL)
-def test_cpu_threading():
-    threads = []
-    start_time = time.time()
-    
-    for i in range(4):
-        t = threading.Thread(target=cpu_bound_task, args=(1000000,))
-        threads.append(t)
-        t.start()
-    
-    for t in threads:
-        t.join()
-    
-    print(f"CPU threading time: {time.time() - start_time:.2f}s")
-
-# Threading with I/O-bound tasks (works well)
-def test_io_threading():
-    threads = []
-    start_time = time.time()
-    
-    for i in range(4):
-        t = threading.Thread(target=io_bound_task)
-        threads.append(t)
-        t.start()
-    
-    for t in threads:
-        t.join()
-    
-    print(f"I/O threading time: {time.time() - start_time:.2f}s")
-```
 
 **Alternatives to GIL:**
 ```python
@@ -2569,201 +2383,18 @@ print(processor.data_sum)        # Just result (cached)
 **A:** Python uses a combination of reference counting and cyclic garbage collection for memory management:
 
 **1. Reference Counting:**
-```python
-import sys
 
-# Every object has a reference count
-a = [1, 2, 3]
-print(sys.getrefcount(a))  # 2 (a + temporary reference in getrefcount)
-
-b = a  # Reference count increases
-print(sys.getrefcount(a))  # 3
-
-del b  # Reference count decreases
-print(sys.getrefcount(a))  # 2
-
-# When reference count reaches 0, object is immediately deallocated
-```
 
 **2. Circular References Problem:**
-```python
-import gc
-import weakref
-
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.parent = None
-        self.children = []
-    
-    def add_child(self, child):
-        child.parent = self  # Circular reference!
-        self.children.append(child)
-
-# Create circular reference
-parent = Node("parent")
-child = Node("child")
-parent.add_child(child)
 
 # Even if we delete references, objects won't be deallocated
 # due to circular reference
-del parent, child
 
 # Force garbage collection
-collected = gc.collect()
-print(f"Collected {collected} objects")
-```
-
-**3. Weak References:**
-```python
-import weakref
-
-class Observer:
-    def __init__(self, name):
-        self.name = name
-    
-    def notify(self, message):
-        print(f"{self.name} received: {message}")
-
-class Publisher:
-    def __init__(self):
-        self._observers = weakref.WeakSet()
-    
-    def add_observer(self, observer):
-        self._observers.add(observer)
-    
-    def notify_all(self, message):
-        # Observers that are deleted will be automatically removed
-        for observer in self._observers:
-            observer.notify(message)
-
-# Usage
-publisher = Publisher()
-observer1 = Observer("Observer 1")
-observer2 = Observer("Observer 2")
-
-publisher.add_observer(observer1)
-publisher.add_observer(observer2)
-
-publisher.notify_all("Hello!")  # Both observers notified
-
-del observer1  # Observer 1 is automatically removed from weak set
-publisher.notify_all("Goodbye!")  # Only Observer 2 notified
-```
 
 **4. Memory Profiling:**
-```python
-import tracemalloc
-import gc
-
-def memory_profiling_example():
-    # Start tracing
-    tracemalloc.start()
-    
-    # Create some objects
-    big_list = [i for i in range(100000)]
-    big_dict = {i: str(i) for i in range(50000)}
-    
-    # Get current memory usage
-    current, peak = tracemalloc.get_traced_memory()
-    print(f"Current memory usage: {current / 1024 / 1024:.2f} MB")
-    print(f"Peak memory usage: {peak / 1024 / 1024:.2f} MB")
-    
-    # Get top memory consuming lines
-    snapshot = tracemalloc.take_snapshot()
-    top_stats = snapshot.statistics('lineno')
-    
-    print("\nTop 5 memory consuming lines:")
-    for stat in top_stats[:5]:
-        print(stat)
-    
-    # Clean up
-    del big_list, big_dict
-    gc.collect()
-    
-    tracemalloc.stop()
-
-# Memory optimization techniques
-def memory_efficient_processing(data):
-    # Use generator instead of list
-    def process_items():
-        for item in data:
-            yield item * 2
-    
-    return process_items()
-
-# Object slots for memory efficiency
-class EfficientClass:
-    __slots__ = ['x', 'y', 'z']  # Reduces memory overhead
-    
-    def __init__(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
-
-class RegularClass:
-    def __init__(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
-
-# Memory comparison
-import sys
-
-efficient = EfficientClass(1, 2, 3)
-regular = RegularClass(1, 2, 3)
-
-print(f"Efficient class size: {sys.getsizeof(efficient)} bytes")
-print(f"Regular class size: {sys.getsizeof(regular)} bytes")
-```
 
 **5. Memory Management Best Practices:**
-```python
-# Context managers for resource management
-class ManagedResource:
-    def __init__(self, name):
-        self.name = name
-        self.resource = None
-    
-    def __enter__(self):
-        print(f"Acquiring {self.name}")
-        self.resource = f"Resource {self.name}"
-        return self.resource
-    
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        print(f"Releasing {self.name}")
-        self.resource = None
-
-# Use context manager
-with ManagedResource("database") as db:
-    # Use resource
-    pass
-# Resource automatically released
-
-# Avoid circular references
-class Parent:
-    def __init__(self):
-        self.children = []
-    
-    def add_child(self, child):
-        self.children.append(child)
-        child.parent = weakref.ref(self)  # Weak reference
-
-# Memory-efficient data structures
-from collections import deque, defaultdict
-import array
-
-# Use deque for efficient append/pop operations
-queue = deque(maxlen=1000)  # Automatic size limiting
-
-# Use array for numeric data
-numbers = array.array('i', [1, 2, 3, 4, 5])  # More memory efficient than list
-
-# Use defaultdict to avoid key checks
-counter = defaultdict(int)
-for item in ['a', 'b', 'a', 'c', 'b']:
-    counter[item] += 1  # No need to check if key exists
-```
 
 **Memory Management Tips:**
 - Use `__slots__` for classes with fixed attributes

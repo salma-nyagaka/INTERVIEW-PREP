@@ -1,0 +1,47 @@
+### ✅ Summary: Vectorization Techniques for NLP
+
+This video explains **three common methods** for converting preprocessed word tokens into **numeric features**—a process known as **vectorization**. This step is essential for enabling machine learning models to process textual data.
+
+---
+
+### 🔢 **1. Binary Vectorization**
+
+* Assigns a **1** if a token is **present** in a document, otherwise **0**.
+* Ignores how many times the word appears—just cares about presence.
+
+---
+
+### 🔢 **2. Count Vectorization**
+
+* Assigns the **number of times** a token appears in the document.
+* Simple, but common words may dominate the representation.
+
+---
+
+### 📊 **3. TF-IDF (Term Frequency-Inverse Document Frequency)**
+
+* A more **refined weighting**:
+
+  * **Term Frequency (TF)**: Frequency of the word in the document.
+  * **Inverse Document Frequency (IDF)**: Penalizes words that appear across many documents.
+* Words that are **frequent in one doc but rare overall** get **higher weights**, making this method useful for highlighting distinctive terms.
+
+---
+
+### ⚙️ **Implementation (Scikit-learn TF-IDF Vectorizer)**
+
+* **Instantiate** the vectorizer with preprocessing settings.
+* **Fit** on training data to learn token mappings.
+* **Transform** training, test, and validation data using the same fitted object to maintain consistency.
+
+---
+
+### 📌 Key Takeaway:
+
+Choose the vectorization method based on task complexity:
+
+* **Binary** for simple tasks.
+* **Count** when frequency matters.
+* **TF-IDF** for nuanced importance across documents.
+
+Always ensure **the same transformations** are applied to both training and test data using the same vectorizer object.
