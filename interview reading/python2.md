@@ -155,7 +155,8 @@ print(outer())  # 11
 ### Functions and Decorators
 
 **Q: Explain different types of arguments in Python functions.**
-
+- Parameter: The variable name in the function definition (name)
+- Argument: The actual value passed when calling the function ("Alice")
 **A:** Python supports several types of function arguments:
 
 **1. Positional Arguments:**
