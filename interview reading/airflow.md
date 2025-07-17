@@ -9,9 +9,10 @@
 5. What is workflow?
 - A workflow is a collection of tasks that are executed in a specific order.(since we need to load data regularly, we need to create a workflow)
 6. What is airflow?
-- Airflow is a platform to programmatically author, schedule, and monitor workflows.
+- Airflow is a platform to manage workflows by running, scheduling, and monitoring workflows.
 7. What is the difference between airflow and astro?
 - Airflow is a platform to programmatically author, schedule, and monitor workflows. Astro is a data integration platform that allows you to connect to various data sources and load data into a data warehouse like Snowflake.
+- Astro cloud is sued to deploy
 8. What is ETL Pipeline?
 - ETL Pipeline is a process of extracting data from a source(maybe DB,IOT or API), (DE teams combines sources of data then) transforming it(into JSON), and loading it into a target(Mongo DB, Postgres, S3 bucket, etc).
 9. Lifecycle of a data scince project
@@ -36,7 +37,7 @@ Note: This process is iterative rather than strictly sequential.
                                                     solve  a problem. Might be in the db,   (provides suggestion to DA/DS Team 
                                                                                             depending on where data is found. Identifies the right kind of data to use)
                                                     cloud or 3rd party apis/IOT)
-Data science project -> Requirements Gathering -> Data analyst/scientist <-> _Discussion_ -> Domain expertise/product owner -> Model Training -> Model Evaluation -> Model Deployment -> Model Monitoring
+Data science project -> Requirements Gathering -> Data analyst/scientist <-> _Discussion_ (maybe in the..)-> Domain expertise/product owner -> Model Training -> Model Evaluation -> Model Deployment -> Model Monitoring
                             ^          ^                                       |       |
                             |          |                                       |       |
                             |          |                                       |      |
@@ -46,7 +47,7 @@ Data science project -> Requirements Gathering -> Data analyst/scientist <-> _Di
                                                                                |       |
                                                                                |       |
                                                                                |       |
-                                                                             Big data engineering (created data pipeline to load data from source to target using ETL Pipeline)
+                                                           data pipelines                Big data engineering (creates data pipeline to load data from source to target using ETL Pipeline)
 
 
 10. What is a DAG?
@@ -82,10 +83,12 @@ How to run airflow and astro + project setup
 15. **What is XComs in Airflow?**
    - XComs (Cross-Communications) allow tasks to exchange small amounts of data. Tasks can push and pull XComs to share information between them.
 
+
 16. **How would you handle dependencies between tasks in a DAG?**
    - Using upstream and downstream operators: `task1 >> task2 >> task3`
    - Using set_upstream and set_downstream methods: `task3.set_upstream(task2)`
    - Using lists: `[task1, task2] >> task3` or `task1 >> [task2, task3]`
+
 
 17. **What are Sensors in Airflow?**
    - Sensors are a type of operator that wait for a certain condition to be true before succeeding and allowing the workflow to continue.
@@ -194,12 +197,3 @@ How to run airflow and astro + project setup
    - Storing and retrieving watermarks using XComs or Variables
    - Implementing idempotent tasks
    - Using templated queries with time-based parameters
-
-
-
-
- 
-
-
-
-
