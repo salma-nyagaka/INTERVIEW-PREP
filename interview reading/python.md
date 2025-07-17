@@ -1,6 +1,6 @@
 
 
-# Python 3.7.10
+# Python 3.13.5
 system archtrcture
 ## Definition
 
@@ -355,6 +355,3 @@ x = lambda a: a + 10
 print(x(5))  # Output: 15
 ```
 
----
-
-Let me know if you'd like a downloadable `.md` file version or formatting adjusted for a blog, slides, or documentation site.
