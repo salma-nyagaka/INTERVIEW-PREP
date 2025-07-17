@@ -327,9 +327,9 @@ print(MyClass.static_method(4))  # 8
 ```
 
 **Method Types:**
-- **Instance methods**: Operate on instance data, receive `self`
-- **Class methods**: Operate on class data, receive `cls`, use `@classmethod`
-- **Static methods**: Don't receive special first parameter, use `@staticmethod`
+- **Instance methods**: Operate on instance data, receive `self` as first parameter
+- **Class methods**: Operate on class data, receive `cls` as first parameter, use `@classmethod`
+- **Static methods**: Don't receive special first parameter, use `@staticmethod`. They behave like normal functions. When you have utility functions that are logically related to the class but don't need access to instance or class data
 
 ## Data Structures
 
