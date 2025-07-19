@@ -290,11 +290,7 @@ git status
 
 2. **Open conflicted files and look for markers:**
 ```
-<<<<<<< HEAD
-Your changes
-=======
 Incoming changes
->>>>>>> branch-name
 ```
 
 3. **Resolve conflicts by:**
