@@ -192,7 +192,7 @@ A template for creating objects.
 * **Caching**: In-memory caching (Redis, Memcached)
 * **Connection Pooling**: Reuse database connections
 
-**Pros**: Simple implementation, no architectural changes, low latency
+**Pros**: Simple implementation, no architectural changes, low latency(ime delay between when a request is made and when a response is received.)
 **Cons**: Hardware limits, single point of failure, expensive at scale
 
 ---
@@ -207,13 +207,7 @@ Most real-world systems use **both** techniques:
 
 ---
 
-## Performance Tips
 
-* Use PostgreSQL
-* Add indexes for SELECT speed
-* Tune CPU and RAM
-
----
 
 ## Library & API Installation Checklist
 
@@ -225,12 +219,13 @@ Most real-world systems use **both** techniques:
 ---
 
 ## JSON Handling in Python
+-  lightweight, text-based data format used to store and exchange data between systems.
 
 | Method       | Description                                 |
 | ------------ | ------------------------------------------- |
 | `json.loads` | Converts JSON string to Python dictionary   |
 | `json.dumps` | Converts Python object to JSON string       |
-| `json.load`  | Parses JSON from a file object              |
+| `json.load`  | Parses(means to analyze and break down data into understandable components that a program can work with.) JSON from a file object              |
 | `json.dump`  | Converts Python object and writes to a file |
 
 ---
@@ -262,24 +257,53 @@ Converts data between relational DB and OOP languages.
 
 ## APIs
 
-### What is an API?
+####  What is an API?
 
 Interface for systems to communicate.
 
-### Types
+ **REST** (Representational State Transfer) is an **architectural style** for designing web APIs that use standard HTTP methods to interact with resources.
 
-* **SOAP**: Contract-based, enterprise use
-* **REST**: Web APIs, data fetch
-* **GraphQL**: Flexible querying by client
+**Core Principles:**
+- **Stateless**: Each request contains all needed information
+- **Resource-based**: Everything is a resource with a unique URL
+- **HTTP Methods**: Use standard verbs (GET, POST, PUT, DELETE)
+- **Standard formats**: Usually JSON for data exchange
 
-### API Requests
+**HTTP Methods & Actions:**
+- **GET**: Retrieve/read data
+- **POST**: Create new resource
+- **PUT**: Update entire resource
+- **PATCH**: Update part of resource
+- **DELETE**: Remove resource
 
-| HTTP Method | Description            | Requests Method     |
-| ----------- | ---------------------- | ------------------- |
-| GET         | Read existing resource | `requests.get()`    |
-| POST        | Create new resource    | `requests.post()`   |
-| PUT         | Update resource        | `requests.put()`    |
-| DELETE      | Delete resource        | `requests.delete()` |
+**Example REST API:**
+```
+GET    /users          → Get all users
+GET    /users/123      → Get user with ID 123
+POST   /users          → Create new user
+PUT    /users/123      → Update user 123
+DELETE /users/123      → Delete user 123
+```
+
+**REST vs Other APIs:**
+- **SOAP**: Heavy, XML-based, complex contracts
+- **GraphQL**: Single endpoint, client specifies data needed
+- **REST**: Simple, standard HTTP, resource-focused
+
+**Key Features:**
+- **Predictable URLs**: Clear resource paths
+- **Standard status codes**: 200 (OK), 404 (Not Found), 500 (Error)
+- **Cacheable**: Responses can be cached for performance
+- **Platform independent**: Works with any language/framework
+
+**Real-World Analogy:**
+Like a **library system** - you know exactly where to find books (predictable locations), what actions you can perform (borrow, return, search), and the rules are the same everywhere.
+
+**Why Popular:**
+- Simple to understand and implement
+- Uses existing web standards
+- Scalable and flexible
+- Wide tool support
 
 ### HTTP Headers
 
@@ -301,6 +325,10 @@ Interface for systems to communicate.
 
 Anonymous functions that can have any number of arguments but can only have one expression.
 
+```bash
+add = lambda a, b: a + b
+print(add(3, 4)) 
+```
 ---
 
 ### Data Types and Variables
@@ -338,10 +366,63 @@ Anonymous functions that can have any number of arguments but can only have one 
 - Checks if two variables reference the same object
 - Cannot be overridden
 
+```python
+# Examples
+a = [1, 2, 3]
+b = [1, 2, 3]
+c = a
+
+print(a == b)  # True (same values)
+print(a is b)  # False (different objects)
+print(a is c)  # True (same object)
+
+# String interning example
+x = "hello"
+y = "hello"
+print(x == y)  # True
+print(x is y)  # True (Python interns small strings)
+```
+
 **Best Practices:**
 - Use `==` for value comparison
 - Use `is` for singleton comparison (`None`, `True`, `False`)
 - Never use `is` with numbers or strings (except for singletons)
+
+**Q. HOF.**
+- Typically stands for Higher-Order Functions in programming.
+Higher-Order Functions are functions that:
+
+- Take other functions as arguments, OR
+- Return functions as results, OR
+- Decorators 
+
+##### Benefits:
+- Code reusability: Same function works with different operations
+- Abstraction: Hide implementation details
+- Functional programming: Compose complex operations from simple ones
+
+
+
+##### Built in -> lambda, filter
+ - map(): Like a factory assembly line - every item goes through the same process and comes out transformed.
+- filter(): Like a security checkpoint - only items that pass the test are allowed through
+
+```bash
+# Get squares of even numbers only
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# Method 1: Filter first, then map
+evens = filter(lambda x: x % 2 == 0, numbers)
+squares_of_evens = list(map(lambda x: x**2, evens))
+print(squares_of_evens)  # [4, 16, 36, 64, 100]
+
+# Method 2: Map first, then filter
+squares = map(lambda x: x**2, numbers)
+even_squares = list(filter(lambda x: x % 2 == 0, squares))
+print(even_squares)  # [4, 16, 36, 64, 100]
+```
+
+
 
 **Q: Explain Python's variable scoping rules (LEGB rule).**
 
@@ -381,10 +462,10 @@ Can provide in any order
 **3. Default Arguments:**
 Parameters with default values
 
-**4. Variable-Length Arguments (*args):**
+**4. Variable-Length Arguments args**
 Accept any number of positional arguments
 
-**5. Keyword Variable-Length Arguments (**kwargs):**
+**5. Keyword Variable-Length Arguments kwargs :**
 Accept any number of keyword arguments
 
 **Important Notes:**
@@ -420,33 +501,6 @@ Accept any number of keyword arguments
 - **Class methods**: Operate on class data, receive `cls` as first parameter, use `@classmethod`
 - **Static methods**: Don't receive special first parameter, use `@staticmethod`. They behave like normal functions. When you have utility functions that are logically related to the class but don't need access to instance or class data
 
-## Data Structures
-
-### Lists and Tuples
-
-**Q: When would you use a list vs a tuple vs a set?**
-
-**A:** Each data structure has specific use cases:
-
-**Lists:**
-- **When to use**: Need ordered, mutable collection with duplicates
-- **Characteristics**: Ordered, mutable, allows duplicates, indexed
-- **Use cases**: Shopping cart items, sequence of operations, dynamic collections
-
-**Tuples:**
-- **When to use**: Need ordered, immutable collection
-- **Characteristics**: Ordered, immutable, allows duplicates, indexed
-- **Use cases**: Coordinates, database records, function returns, dictionary keys
-
-**Sets:**
-- **When to use**: Need unique items, fast membership testing
-- **Characteristics**: Unordered, mutable, no duplicates, not indexed
-- **Use cases**: Removing duplicates, membership testing, mathematical operations
-
-**Performance Comparison:**
-- **List**: O(1) append, O(n) search, O(n) insert/delete
-- **Tuple**: O(n) search, immutable operations
-- **Set**: O(1) add/remove/lookup, no ordering
 
 **Q: Explain list comprehensions and when to use them.**
 
@@ -506,27 +560,6 @@ List comprehensions are generally faster than equivalent for loops because they'
 
 ### Classes and Objects
 
-**Q: Explain the difference between `__init__` and `__new__` methods.**
-
-**A:** Both methods are involved in object creation, but they serve different purposes:
-
-**`__new__` method:**
-- Creates the object instance
-- Called before `__init__`
-- Static method that returns a new instance
-- Rarely overridden except for singletons or immutable types
-
-**`__init__` method:**
-- Initializes the object after it's created
-- Called after `__new__`
-- Instance method that modifies `self`
-- Commonly overridden for object initialization
-
-**Key Differences:**
-- `__new__` creates, `__init__` initializes
-- `__new__` returns an instance, `__init__` returns None
-- `__new__` is called once per object, `__init__` can be called multiple times
-- Override `__new__` for creation control, `__init__` for initialization
 
 **Q: What are Python's magic methods (dunder methods)? Give examples.**
 
@@ -555,7 +588,6 @@ List comprehensions are generally faster than equivalent for loops because they'
 - `__enter__`: Entering context
 - `__exit__`: Exiting context
 
-### Inheritance and Polymorphism
 
 **Q: Explain method resolution order (MRO) in Python.**
 
@@ -706,65 +738,6 @@ BaseException
     ├── ValueError
     └── ... (many more)
 ```
-
-# Exception Handling Best Practices in Python
-- An exception is an event that occurs during program execution that disrupts the normal flow of instructions. It's Python's way of signaling that something unexpected or erroneous has happened.
-
-- Exception handling is crucial for writing robust, maintainable Python code. Here are the key best practices:
-
-## 1. Be Specific with Exception Types
-
-**❌ Bad: Catching all exceptions**
-Don't use bare `except:` clauses as they catch all exceptions, making it difficult to identify and handle specific problems.
-
-**✅ Good: Catch specific exceptions**
-Catch specific exception types and handle each appropriately. This allows for targeted error handling and better debugging.
-
-## 2. Use Multiple Except Blocks
-
-Handle different exceptions with appropriate responses. For example, when making HTTP requests, handle timeout errors differently from connection errors, and authentication errors differently from server errors.
-
-## 3. Use Finally for Cleanup
-
-Always use `finally` for cleanup operations that must run regardless of whether an exception occurred. This is essential for closing file handles, database connections, or other resources.
-
-## 4. Use Else Clause for Success Logic
-
-The `else` clause runs only if no exceptions occurred in the `try` block. This is useful for code that should only run on successful completion, keeping success logic separate from error handling.
-
-## 5. Avoid Silent Failures: Don't use bare except: pass blocks
-
-## 6. Use Context Managers for Resource Management
-
-**❌ Bad: Manual resource management**
-Manually managing resources like file handles or database connections is error-prone and can lead to resource leaks.
-
-**✅ Good: Use context managers**
-Use `with` statements and context managers to ensure resources are properly cleaned up, even if exceptions occur.
-
-## 7. Create Meaningful Custom Exceptions
-
-Create custom exception classes that provide meaningful information about what went wrong. Include relevant attributes like error codes, field names, or context that will help with debugging and handling.
-
-## 8. Use Exception Chaining
-
-Chain exceptions to preserve the original error context using `raise ... from ...`. This maintains the full error trail while adding your own context.
-
-## 9. Log Exceptions Properly
-
-Use proper logging to record exceptions with appropriate levels (warning, error, critical) and include stack traces when necessary. This helps with debugging and monitoring.
-
-## 10. Use Assertions for Debug Checks
-
-Use assertions for conditions that should never be false during development. Assertions help catch programming errors early but can be disabled in production.
-
-## 11. Exception Handling in Class Methods
-
-When designing classes, ensure proper exception handling in methods. Validate inputs, handle resource cleanup, and provide meaningful error messages that help users understand what went wrong.
-
-## 12. Testing Exception Handling
-
-Write tests that verify your exception handling works correctly. Test both that exceptions are raised when expected and that they're not raised when they shouldn't be.
 
 ## Key Exception Handling Principles
 
@@ -956,6 +929,8 @@ Using run_in_executor to run blocking code in thread pools.
 ### Memory Management
 
 **Q: How does Python manage memory? Explain reference counting and garbage collection.**
+
+memory cleanup system that finds and removes objects that are no longer being used by your program.
 
 **A:** Python uses a combination of reference counting and cyclic garbage collection for memory management:
 

@@ -1,20 +1,19 @@
-def safe_divide(a, b):
-    try:
-        result = a / b
-    except ZeroDivisionError:
-        print("Cannot divide by zero!")
-        return None
-    except TypeError:
-        print("Both arguments must be numbers!")
-        return None
-    else:
-        # Only runs if no exception occurred
-        print(f"Division successful: {a} / {b} = {result}")
-        return result
-    finally:
-        print("Division operation completed.")
+class Engine:
+    def __init__(self, horsepower):
+        self.horsepower = horsepower
+    
+    def start(self):
+        return f"Engine started{self.horsepower}"
+
+class Car:  # Car HAS-A Engine
+    def __init__(self, make, model, horsepower):
+        self.make = make
+        self.model = model
+        self.engine = Engine(horsepower)  # Composition
+    
+    def start(self):
+        return f"{self.make} {self.model}: {self.engine.start()}"
 
 # Usage
-print(safe_divide(10, 2))   # Success case
-print(safe_divide(10, 0))   # ZeroDivisionError case
-print(safe_divide(10, "2")) # TypeError case
+car = Car("Toyota", "Camry", 200)
+print(car.start())  # "Toyota Camry: Engine started"
