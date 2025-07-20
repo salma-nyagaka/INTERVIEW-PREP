@@ -5,14 +5,10 @@
 ### PostgreSQL
 PostgreSQL is an advanced, open-source object-relational database management system (ORDBMS) known for its reliability, feature robustness, and performance. It supports both SQL (relational) and JSON (non-relational) querying, making it highly versatile. PostgreSQL is ACID-compliant, supports advanced data types, full-text search, and has extensive extensibility features including custom functions, operators, and data types.
 
-### Transaction
-A transaction is a logical unit of work that consists of one or more database operations that are executed as a single, indivisible unit. Either all operations within the transaction succeed (commit) or all operations fail (rollback). Transactions ensure data integrity and consistency in database systems.
-
-### ACID Properties
-ACID is an acronym describing four key properties that guarantee reliable database transactions: Atomicity (all-or-nothing execution), Consistency (database remains in valid state), Isolation (transactions don't interfere with each other), and Durability (committed changes persist permanently).
-
 ### Database Normalization
 Database normalization is the process of organizing data in a database to reduce redundancy and improve data integrity. It involves decomposing tables into smaller, related tables and defining relationships between them. Normalization follows specific rules called normal forms (1NF, 2NF, 3NF, etc.) to eliminate data anomalies.
+It's important because it eliminates data redundancy, prevents update anomalies, reduces storage space, improves data integrity, and makes database maintenance easier. However, it may require more complex queries and joins.
+
 
 ### Database Views
 Database views are virtual tables created from the result of stored queries. They don't store data themselves but provide a way to present data from one or more tables in a specific format. Views simplify complex queries, provide security by restricting access to specific columns/rows, and offer a consistent interface to underlying data.
@@ -30,7 +26,7 @@ PostgreSQL is an advanced open-source relational database system that supports b
 **Extensibility**: Custom functions, operators, and data types
 **Standards compliance**: Follows SQL standards closely
 **Advanced data types**: JSON, arrays, geometric types, UUID
-**Concurrency**: MVCC for high concurrent access
+**Concurrency**: MVCC for high concurrent access -> ability to manage multiple tasks at the same time, where tasks can start, run, and complete in overlapping time periods, though they don't necessarily execute simultaneously.
 **Scalability**: Handles large datasets efficiently
 **Community support**: Large, active community with extensive documentation
 
@@ -52,8 +48,6 @@ A database transaction is a sequence of one or more database operations that are
 **REPEATABLE READ**: Prevents dirty reads and non-repeatable reads, allows phantom reads
 **SERIALIZABLE**: Prevents all phenomena, highest isolation level
 
-### 6. What is database normalization and why is it important?
-Database normalization is the process of organizing data to minimize redundancy and dependency. It's important because it eliminates data redundancy, prevents update anomalies, reduces storage space, improves data integrity, and makes database maintenance easier. However, it may require more complex queries and joins.
 
 ### 7. Explain the different normal forms
 **First Normal Form (1NF)**: Eliminate repeating groups, each cell contains atomic values
@@ -92,7 +86,7 @@ Schemas are logical containers within a database that group related objects like
 **Character**: CHAR, VARCHAR, TEXT
 **Date/Time**: DATE, TIME, TIMESTAMP, INTERVAL
 **Boolean**: BOOLEAN
-**Advanced**: JSON, JSONB, ARRAY, UUID, INET, CIDR
+**Advanced**: JSON, JSONB, ARRAY, UUID(Universally unique identifier), INET, CIDR
 **Geometric**: POINT, LINE, CIRCLE, POLYGON
 **Custom**: User-defined types
 
