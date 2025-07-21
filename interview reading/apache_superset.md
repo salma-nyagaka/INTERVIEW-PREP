@@ -138,25 +138,6 @@ Default Aggregation: SUM
 3. Governance - Centralized data definitions, consistent business logic, Easier maintenance
 4. User Experience - Simplified chart creation, Guided visualization process
 
-## **Dataset Creation Process**
-
-### **Step 1: Select Source**
-- Choose database and table
-- Or write custom SQL query
-
-### **Step 2: Configure Columns**
-- Set column types
-- Define which columns are groupable/filterable
-- Create calculated fields
-
-### **Step 3: Define Metrics**
-- Create aggregation functions
-- Set default metrics for charts
-
-### **Step 4: Test and Validate**
-- Preview data
-- Test queries
-- Verify calculations
 
 ## **Dataset Management**
 
@@ -187,35 +168,10 @@ Default Aggregation: SUM
 - Use appropriate indexes
 - Consider data partitioning
 
-## **Example in Context**
-
-```sql
--- Original Database Table
-SELECT 
-    order_id,
-    customer_id,
-    product_id,
-    quantity,
-    unit_price,
-    order_date
-FROM orders;
-
--- Dataset Configuration
-Dimensions: customer_id, product_id, order_date
-Metrics: 
-  - Total Revenue: SUM(quantity * unit_price)
-  - Order Count: COUNT(order_id)
-  - Average Order Value: AVG(quantity * unit_price)
-```
 
 ## **Interview-Ready Summary**
 *"A dataset in Superset is a configured layer on top of your database tables that defines how data should be used for visualization. It specifies which columns are dimensions (for grouping) or metrics (for aggregation), includes metadata about data types, and can contain calculated fields. Think of it as a reusable template that makes chart creation faster and more consistent across your organization."*
 
-## **Quick Analogy**
-**Dataset = Recipe Card**
-- The database table is your raw ingredients
-- The dataset is your recipe card that tells you how to use those ingredients
-- Multiple people can use the same recipe (dataset) to create different dishes (charts)
 
 
 # Apache Superset Chart Creation - Step-by-Step Guide

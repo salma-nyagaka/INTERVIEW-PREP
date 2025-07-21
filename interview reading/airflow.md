@@ -14,7 +14,26 @@
 - Airflow is a platform to programmatically author, schedule, and monitor workflows. Astro is a data integration platform that allows you to connect to various data sources and load data into a data warehouse like Snowflake.
 - Astro cloud is sued to deploy
 8. What is ETL Pipeline?
-- ETL Pipeline is a process of extracting data from a source(maybe DB,IOT or API), (DE teams combines sources of data then) transforming it(into JSON), and loading it into a target(Mongo DB, Postgres, S3 bucket, etc).
+
+1. **Extract** *-Pull data from sources: databases, APIs, files (CSV, JSON), etc.
+* Tools: Python scripts, Airflow, Talend, etc.
+
+2. **Transform** - Clean, validate, and reshape data:
+
+  * Remove nulls/duplicates
+  * Convert data types
+  * Aggregate or join datasets
+* Tools: Pandas, Spark, dbt
+
+3. **Load** - Store processed data into a destination:
+
+  * Data warehouse (e.g. Snowflake, BigQuery)
+  * Relational DB (e.g. PostgreSQL, MySQL)
+  * Cloud storage (e.g. S3)
+
+
+Let me know if you want a diagram, orchestration tools, or how this integrates with NLP or ML workflows.
+
 9. Lifecycle of a data scince project
       1. **Problem Definition**: Define business objectives, success metrics, and scope.
       2. **Data Collection**: Gather data from relevant sources.
