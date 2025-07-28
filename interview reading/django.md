@@ -193,6 +193,8 @@ Database views are virtual tables created from the result of stored queries. The
 
 ### 1. How do you create a Django project?
 Use the command: django-admin startproject project_name. This creates the main project directory with essential configuration files including settings.py, urls.py, wsgi.py, asgi.py, and manage.py.
+- WSGI - a standard interface that defines how web servers and Python web applications communicate
+-  a calling convention in Python for web servers to interact with asynchronous-capable Python web frameworks and applications. It's designed as a successor to WSGI (Web Server Gateway Interface), but with a focus on handling asynchronous operations and supporting protocols beyond HTTP, such as WebSockets. 
 
 ### 2. How do you create a Django app?
 Navigate to the project directory and use: python manage.py startapp app_name. This creates an app directory with models.py, views.py, urls.py, admin.py, apps.py, tests.py, and migrations folder.
@@ -303,6 +305,12 @@ Django REST Framework is a powerful toolkit for building Web APIs. Key component
 ### 24. What are the advantages of DRF?
 **Easy serialization**: Automatic conversion between Python objects and JSON/XML
 **Flexible authentication**: Multiple authentication methods supported
+- User model with username, email, password fields
+- Login/logout views
+- Password hashing and validation
+- Session management
+- Permission and group systems
+
 **Powerful permissions**: Fine-grained permission control
 **Automatic API documentation**: Built-in browsable API
 **Throttling**: Rate limiting capabilities
@@ -320,8 +328,10 @@ Serializers convert between Python objects and JSON/XML. Types include:
 ViewSets group related views together in a single class. Advantages include code reusability, automatic URL routing, consistent API structure, and built-in CRUD operations with less code.
 
 ### 27. Difference between APIView, ViewSet, and GenericAPIView
-**APIView**: Basic view class with HTTP method handlers
+**APIView**: Basic view class with HTTP method handlers. No built-in CRUD operations
 **GenericAPIView**: Provides common functionality for list/detail views
+- Provides built-in queryset and serializer handling
+- Includes pagination, filtering, and permission support
 **ViewSet**: Groups multiple related views, works with routers for automatic URL generation
 
 #### APIView

@@ -545,3 +545,43 @@ LIMIT 100
 3. **What limitations have you encountered with Superset and how did you work around them?**
 
 
+# Apache Superset Roles & Permissions - Interview Summary
+
+## **Default Roles (Hierarchical)**
+- **Admin**: Full system access, user management, all configurations
+- **Alpha**: Power user - create/edit dashboards, SQL Lab, manage datasets
+- **Gamma**: Standard user - view/create own content, limited SQL access
+- **Public**: Anonymous/guest - read-only for public dashboards
+- **sql_lab**: SQL Lab access role (often combined with others)
+
+## **Key Management Tasks**
+
+**Creating Roles:**
+- Settings > Security > List Roles > Add permissions
+- Common permissions: `can_read/write_dashboard`, `can_sql_json`
+
+**User Assignment:**
+- Settings > Security > List Users > Edit > Assign roles
+
+## **Export/Import Process**
+- **Export**: Dashboard/Chart view > Actions > Export (YAML format)
+- **CLI**: `superset export_dashboards -f file.zip -d 1,2,3`
+- **Import**: Upload .zip file > Choose overwrite/skip options
+
+## **Sharing Methods**
+1. **Role-based**: Assign dashboard access to specific roles
+2. **Public links**: Enable public access in dashboard properties
+3. **Email reports**: Automated scheduled reports to users
+4. **Embedding**: iframe code for external websites
+5. **Row-Level Security (RLS)**: Filter data per user/role
+
+## **Best Practices**
+- Use least privilege principle
+- Regular permission audits
+- Test imports in staging first
+- Enable SSL for production
+- Document custom configurations
+
+**Interview Key Points**: Superset uses role-based access control with hierarchical permissions, supports multiple export formats, and offers flexible sharing options from public links to embedded dashboards with row-level security.
+
+

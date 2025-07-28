@@ -155,8 +155,12 @@ Hides complex implementation; only essential features are shown.
 ---
 
 ## Polymorphism
+- The ability of a programming language to treat objects of different classes in a uniform way, through a common interface
+- the ability of something to have or to be displayed in more than one form
+- Same interface for different implementations
 
 ### Overriding
+-  Child class replaces parent class method
 
 ```python
 class Vehicle:
@@ -169,6 +173,7 @@ class EV(Vehicle):
 ```
 
 ### Overloading
+-  Same method name, different parameters
 
 ```python
 class A:
@@ -193,13 +198,13 @@ obj.show(4)
 
 ### User-defined
 
-* **Arrays**: Homogeneous data
-* **Stacks**: LIFO
-* **Queues**: FIFO
-* **Trees**: Hierarchical structure
-* **Linked Lists**: Nodes linked by pointers
-* **HashMaps**: Like dictionaries
-* **Graphs**: Vertices and edges
+* **Arrays**: Fixed-size collection storing elements of the same data type in contiguous memory
+* **Stacks**:  Linear structure where last element added is first to be removed
+* **Queues**: Linear structure where first element added is first to be removed
+* **Trees**: Hierarchical structure with nodes connected by edges, having parent-child relationships
+* **Linked Lists**: Linear structure where elements are stored in nodes, each pointing to the next
+* **HashMaps**: Key-value pairs using hash functions for fast lookup
+* **Graphs**: Non-linear structure with vertices (nodes) connected by edges
 
 ---
 
@@ -213,32 +218,82 @@ obj.show(4)
 ### CPU Scaling
 
 * Use concurrency and parallelism
-* **Threads**: Run functions concurrently
-* **Processes**: Independent execution units
 
-### Thread Example
+## **What is a Thread?**
 
+A **thread** is a lightweight unit of execution within a process that can run concurrently with other threads while sharing the same memory space and system resources.
+
+## **Key Characteristics:**
+
+🔹 **Lightweight**: Much smaller overhead compared to creating new processes  
+🔹 **Shared Memory**: All threads in a process share the same memory space  
+🔹 **Independent Execution**: Each thread has its own stack, registers, and program counter  
+🔹 **Concurrent**: Multiple threads can execute simultaneously  
+🔹 **Managed**: Controlled by the operating system's thread scheduler  
+
+## **Thread vs Process:**
+
+| **Thread** | **Process** |
+|------------|-------------|
+| Lightweight | Heavyweight |
+| Shared memory | Isolated memory |
+| Fast context switching | Slower context switching |
+| Less secure (shared data) | More secure (isolated) |
+| Communication via shared variables | Communication via IPC |
+
+## **Common Use Cases:**
+
+✅ **I/O Operations**: File reading, network requests, database queries  
+✅ **User Interfaces**: Keep UI responsive while processing  
+✅ **Web Servers**: Handle multiple client requests simultaneously  
+✅ **Background Tasks**: Monitoring, logging, periodic cleanup  
+✅ **Producer-Consumer**: Processing queues and buffers  
+
+## **Threading Challenges:**
+
+⚠️ **Race Conditions**: Multiple threads accessing shared data  
+⚠️ **Deadlocks**: Threads waiting for each other indefinitely  
+⚠️ **Synchronization**: Need locks, semaphores, etc.  
+⚠️ **Debugging**: Harder to debug concurrent issues  
+
+## **Simple Example:**
 ```python
 import threading
+import time
 
-def print_something(something):
-    print(something)
+def worker(name):
+    print(f"Thread {name} starting")
+    time.sleep(2)
+    print(f"Thread {name} finished")
 
-t = threading.Thread(target=print_something, args=("hello",))
-t.start()
-t.join()
+# Create and start threads
+t1 = threading.Thread(target=worker, args=("A",))
+t2 = threading.Thread(target=worker, args=("B",))
+
+t1.start()  # Start thread A
+t2.start()  # Start thread B
+
+t1.join()   # Wait for A to complete
+t2.join()   # Wait for B to complete
 ```
 
+**Think of threads like multiple workers in a factory sharing the same workspace and tools, but each working on different tasks simultaneously.**
+
 ---
+##  Process  - an instance of a program running in a computer
 
 ## Microservices
+-  software architecture pattern where applications are built as a collection of small, independent services that communicate over well-defined APIs.
 
 * Loosely coupled services
 * Enables rapid, reliable delivery
 
 ---
 
-## Caching
+## Caching 
+- Caching is a technique used to store frequently accessed data in a faster, more accessible location so it can be retrieved more quickly in the future.
+- Instead of going to the original (slower) source every time you need data, you keep a copy in a "cache" - a faster storage location that's closer to where you need it.
+
 
 ### DB Caching
 
@@ -358,6 +413,7 @@ print(x(5))  # Output: 15
 
 
 ### Data Types and Variables
+- a classification that tells the computer what kind of data a value represents and what operations can be performed on it.
 
 **Q: Explain the difference between mutable and immutable objects in Python. Give examples.**
 
@@ -779,6 +835,9 @@ valid_keys = {
 # invalid = {[1, 2]: "list"}  # Lists are not hashable
 ```
 
+**Time complexity** - How the number of operations (or execution time) grows as input size increases.
+
+**Space complexity** -  How much additional memory an algorithm needs as input size grows.
 **Q: What's the difference between `dict.get()` and `dict[]` for accessing values?**
 
 **A:** These methods handle missing keys differently:
