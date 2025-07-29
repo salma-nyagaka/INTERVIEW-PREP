@@ -2,7 +2,7 @@
 
 ## What Are Neural Networks?
 
-Models inspired by the brain, using layers of neurons to learn complex, non-linear patterns beyond linear models.
+Models inspired by the brain, uses interconnected layers layers of neurons to learn complex, non-linear patterns btwn features and labels
 
 ## Core Architecture
 

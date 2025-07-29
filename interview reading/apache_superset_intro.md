@@ -168,53 +168,6 @@ superset run -p 8088 --with-threads --reload --debugger
 ```
 
 ### Production Environment Setup
-
-#### Kubernetes Deployment
-```yaml
-# superset-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: superset
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: superset
-  template:
-    metadata:
-      labels:
-        app: superset
-    spec:
-      containers:
-      - name: superset
-        image: apache/superset:latest
-        ports:
-        - containerPort: 8088
-        env:
-        - name: SUPERSET_CONFIG_PATH
-          value: "/app/pythonpath/superset_config.py"
-        - name: SUPERSET_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: superset-secret
-              key: secret-key
-        volumeMounts:
-        - name: config
-          mountPath: /app/pythonpath
-        resources:
-          requests:
-            memory: "1Gi"
-            cpu: "500m"
-          limits:
-            memory: "2Gi"
-            cpu: "1000m"
-      volumes:
-      - name: config
-        configMap:
-          name: superset-config
-```
-
 #### Production Configuration File
 ```python
 # superset_config.py

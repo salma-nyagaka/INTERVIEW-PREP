@@ -82,15 +82,38 @@ Task 1               Task 2               Task 3
 How to run airflow and astro + project setup
 
 13. **What are the core components of Airflow architecture?**
-   - **Web Server**: Flask-based UI for DAG visualization/management (port 8080)
-   - **Scheduler**: Monitors DAGs, schedules tasks based on dependencies
-   - **Executor**: Determines task execution method (Local, Celery, Kubernetes)
-   - **Metadata Database**: Stores workflow state (PostgreSQL, MySQL, SQLite)
-   - **DAG Files**: Python files defining workflow structure
-   - **Workers**: Execute tasks on separate machines in distributed setups
-   - **Queue**: Enables scheduler-worker communication (Redis, RabbitMQ)
-   - **XCom**: Facilitates inter-task data exchange
-   - **Providers**: Connects to external services (AWS, GCP, databases)
+ Here’s a concise summary of the **components of Apache Airflow**:
+
+---
+
+### ✅ **Core Components of Airflow**
+
+1. **Scheduler**
+
+   * Triggers and schedules tasks in DAGs.
+
+2. **Executor**
+
+   * Executes tasks from the queue (types: Local, Celery, Kubernetes, etc.).
+
+3. **Web Server (UI)**
+
+   * Web interface to monitor, trigger, and manage DAGs and tasks.
+
+4. **Metadata Database**
+
+   * Stores DAGs, task status, logs, and configurations.
+
+5. **Workers** *(for distributed setups)*
+   * Run tasks in parallel (used with Celery/Kubernetes Executors).
+6. **DAGs (Directed Acyclic Graphs)**
+   * Python-defined workflows containing tasks and dependencies.
+7. **CLI (Command Line Interface)**
+   * Used to manage Airflow via terminal commands.
+8. **Plugins** *(optional)*
+   * Add custom features like operators, sensors, or UI components.
+
+
 
 14. **Explain the concept of Executors in Airflow.**
    - Executors are components that run tasks. Different executor types include:

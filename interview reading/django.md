@@ -206,7 +206,7 @@ manage.py is a command-line utility that provides various Django administrative 
 **Project Directory**: Contains global settings and configuration
 **Apps**: Modular components containing specific functionality
 **manage.py**: Command-line utility for administrative tasks
-**settings.py**: Project configuration and settings
+**settings.py**: Project configuration and settings, authencity and integreity
 **urls.py**: URL routing configuration
 **wsgi.py/asgi.py**: Web server gateway interface files
 **requirements.txt**: Project dependencies
@@ -399,8 +399,11 @@ Throttling controls the rate of requests users can make. Types include:
 
 ### 30. Explain DRF pagination and its types
 Pagination divides large datasets into smaller chunks. Types include:
-**PageNumberPagination**: Uses page numbers
+**PageNumberPagination**: 
+- Uses a page parameter to specify which page of results to return
+- Each page contains a fixed number of items (page_size)
 **LimitOffsetPagination**: Uses limit and offset parameters
+- Uses limit (how many items to return) and offset (how many items to skip)
 **CursorPagination**: Uses cursor-based pagination for large datasets
 
 ### 31. How do you implement API views using database views in DRF?
